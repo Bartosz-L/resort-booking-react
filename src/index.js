@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { BrowserRouter as Router } from "react-router-dom";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import { RoomProvider, RoomConsumer, RoomContext } from "./context/context";
+import { RoomProvider } from "./context/context";
 
 ReactDOM.render(
   <RoomProvider>

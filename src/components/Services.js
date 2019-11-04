@@ -3,6 +3,7 @@ import Title from "./Title";
 import { FaCocktail, FaHiking, FaShuttleVan, FaBeer } from "react-icons/fa";
 
 const Services = () => {
+  // eslint-disable-next-line no-unused-vars
   const [services, setServices] = useState([
     {
       icon: <FaCocktail />,
