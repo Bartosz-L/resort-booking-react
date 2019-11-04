@@ -5,6 +5,7 @@ import defaultBcg from "../static/images/room-1.jpeg";
 import Hero from "../components/Hero";
 import Banner from "../components/Banner";
 import StyledHero from "../components/StyledHero";
+import { link } from "fs";
 
 const SingleRoom = () => {
   const match = useRouteMatch();
@@ -77,6 +78,14 @@ const SingleRoom = () => {
             <h6>{breakfast && "free breakfast included"}</h6>
           </article>
         </div>
+      </section>
+      <section className="room-extras">
+        <h6>extras</h6>
+        <ul className="extras">
+          {extras.map((item, index) => (
+            <li key={index}>- {item}</li>
+          ))}
+        </ul>
       </section>
     </>
   );
