@@ -88,6 +88,7 @@ const RoomProvider = ({ children }) => {
 
     // transform value
     capacity = parseInt(capacity);
+    price = parseInt(price);
 
     // filter by type
     if (type !== "all") {
@@ -99,11 +100,15 @@ const RoomProvider = ({ children }) => {
       tempRooms = tempRooms.filter(room => room.capacity >= capacity);
     }
 
+    // filter by price
+    tempRooms = tempRooms.filter(room => room.price <= price);
+
+    // updating the state
     setState(prevState => {
       return { ...prevState, sortedRooms: tempRooms };
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.type, state.capacity, state.rooms]);
+  }, [state.type, state.capacity, state.rooms, state.price]);
 
   return (
     <RoomContext.Provider
