@@ -1,6 +1,7 @@
 import React, { createContext, useEffect } from "react";
 import items from "../data";
 import useAsyncState from "../utils/useAsyncState";
+import { stat } from "fs";
 
 const RoomContext = createContext();
 
@@ -69,6 +70,7 @@ const RoomProvider = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // filtering
   useEffect(() => {
     let {
       rooms,
@@ -81,18 +83,27 @@ const RoomProvider = ({ children }) => {
       pets
     } = state;
 
+    // all the rooms
     let tempRooms = [...rooms];
+
+    // transform value
+    capacity = parseInt(capacity);
 
     // filter by type
     if (type !== "all") {
       tempRooms = tempRooms.filter(room => room.type === type);
     }
 
+    // filter by capacity
+    if (capacity !== 1) {
+      tempRooms = tempRooms.filter(room => room.capacity >= capacity);
+    }
+
     setState(prevState => {
       return { ...prevState, sortedRooms: tempRooms };
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.type]);
+  }, [state.type, state.capacity, state.rooms]);
 
   return (
     <RoomContext.Provider
