@@ -41,7 +41,7 @@ const RoomProvider = ({ children }) => {
 
   const handleChange = async event => {
     const target = event.target;
-    const value = event.type === "checkbox" ? target.checked : target.value;
+    const value = target.type === "checkbox" ? target.checked : target.value;
     const name = event.target.name;
 
     await setState(prevState => {
@@ -103,12 +103,36 @@ const RoomProvider = ({ children }) => {
     // filter by price
     tempRooms = tempRooms.filter(room => room.price <= price);
 
+    // filter by size
+    tempRooms = tempRooms.filter(
+      room => room.size >= minSize && room.size <= maxSize
+    );
+
+    // filter by breakfast
+    if (breakfast) {
+      tempRooms = tempRooms.filter(room => room.breakfast === true);
+    }
+
+    // filter by pets
+    if (pets) {
+      tempRooms = tempRooms.filter(room => room.pets === true);
+    }
+
     // updating the state
     setState(prevState => {
       return { ...prevState, sortedRooms: tempRooms };
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.type, state.capacity, state.rooms, state.price]);
+  }, [
+    state.type,
+    state.capacity,
+    state.rooms,
+    state.price,
+    state.minSize,
+    state.maxSize,
+    state.breakfast,
+    state.pets
+  ]);
 
   return (
     <RoomContext.Provider
