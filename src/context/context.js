@@ -1,7 +1,6 @@
 import React, { createContext, useEffect } from "react";
 import items from "../data";
 import useAsyncState from "../utils/useAsyncState";
-import { stat } from "fs";
 
 const RoomContext = createContext();
 

@@ -1,11 +1,9 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { Link, useRouteMatch } from "react-router-dom";
 import { RoomContext } from "../context/context";
 import defaultBcg from "../static/images/room-1.jpeg";
-import Hero from "../components/Hero";
 import Banner from "../components/Banner";
 import StyledHero from "../components/StyledHero";
-import { link } from "fs";
 
 const SingleRoom = () => {
   const match = useRouteMatch();
