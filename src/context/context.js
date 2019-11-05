@@ -1,14 +1,24 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useEffect } from "react";
 import items from "../data";
+import useAsyncState from "../utils/useAsyncState";
 
 const RoomContext = createContext();
 
 const RoomProvider = ({ children }) => {
-  const [state, setState] = useState({
+  const [state, setState] = useAsyncState({
     rooms: [],
     sortedRooms: [],
     featuredRooms: [],
-    loading: true
+    loading: true,
+    type: "all",
+    capacity: 1,
+    price: 0,
+    minPrice: 0,
+    maxPrice: 0,
+    minSize: 0,
+    maxSize: 0,
+    breakfast: false,
+    pets: false
   });
 
   const formatData = items => {
@@ -28,20 +38,66 @@ const RoomProvider = ({ children }) => {
     return singleRoom;
   };
 
+  const handleChange = async event => {
+    const target = event.target;
+    const value = event.type === "checkbox" ? target.checked : target.value;
+    const name = event.target.name;
+
+    await setState(prevState => {
+      return { ...prevState, [name]: value };
+    });
+  };
+
   useEffect(() => {
     let rooms = formatData(items);
     let featuredRooms = rooms.filter(room => room.featured === true);
+    let maxPrice = Math.max(...rooms.map(item => item.price));
+    let maxSize = Math.max(...rooms.map(item => item.size));
 
-    setState({
-      rooms: rooms,
-      featuredRooms: featuredRooms,
-      sortedRooms: rooms,
-      loading: false
+    setState(prevState => {
+      return {
+        ...prevState,
+        rooms: rooms,
+        featuredRooms: featuredRooms,
+        sortedRooms: rooms,
+        loading: false,
+        price: maxPrice,
+        maxPrice: maxPrice,
+        maxSize: maxSize
+      };
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    let {
+      rooms,
+      type,
+      capacity,
+      price,
+      minSize,
+      maxSize,
+      breakfast,
+      pets
+    } = state;
+
+    let tempRooms = [...rooms];
+
+    // filter by type
+    if (type !== "all") {
+      tempRooms = tempRooms.filter(room => room.type === type);
+    }
+
+    setState(prevState => {
+      return { ...prevState, sortedRooms: tempRooms };
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.type]);
+
   return (
-    <RoomContext.Provider value={{ ...state, getRoom: getRoom }}>
+    <RoomContext.Provider
+      value={{ ...state, getRoom: getRoom, handleChange: handleChange }}
+    >
       {children}
     </RoomContext.Provider>
   );
@@ -49,4 +105,14 @@ const RoomProvider = ({ children }) => {
 
 const RoomConsumer = RoomContext.Consumer;
 
-export { RoomProvider, RoomConsumer, RoomContext };
+const withRoomConsumer = Component => {
+  const ConsumerWrapper = props => (
+    <RoomConsumer>
+      {value => <Component {...props} context={value} />}
+    </RoomConsumer>
+  );
+
+  return ConsumerWrapper;
+};
+
+export { RoomProvider, RoomContext, withRoomConsumer };
